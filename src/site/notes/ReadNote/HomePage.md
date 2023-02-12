@@ -8,5 +8,5 @@
 > 
 > *毛泽东* 
 
-[[ReadNote/WageLabourandCapital\|雇佣劳动与资本-马克思]]
+[[ReadNote/雇佣劳动与资本WageLabourandCapital\|雇佣劳动与资本-马克思]]
 
