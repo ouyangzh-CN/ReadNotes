@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"dg-permalink":"“雇佣劳动与资本”","permalink":"/“雇佣劳动与资本”/","tags":["gardenEntry"]}
+{"dg-publish":true,"dg-permalink":"“雇佣劳动与资本WageLabourandCapital”","permalink":"/“雇佣劳动与资本WageLabourandCapital”/","tags":["gardenEntry"]}
 ---
 
 
