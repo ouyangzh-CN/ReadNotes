@@ -1,7 +1,8 @@
 ---
-{"dg-publish":true,"dg-permalink":"“雇佣劳动与资本WageLabourandCapital”","permalink":"/“雇佣劳动与资本WageLabourandCapital”/","tags":["gardenEntry"]}
+{"dg-publish":true,"dg-permalink":"“雇佣劳动与资本WageLabourandCapital”","permalink":"/“雇佣劳动与资本WageLabourandCapital”/"}
 ---
 
+# 雇佣劳动与资本
 
 本文的目的是让最广大工人们都了解
 
