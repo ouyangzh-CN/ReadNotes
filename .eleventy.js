@@ -3,7 +3,7 @@ const markdownIt = require("markdown-it");
 const fs = require("fs");
 const matter = require("gray-matter");
 const faviconPlugin = require("eleventy-favicon");
-const tocPlugin = require("eleventy-plugin-toc");
+const tocPlugin = require("eleventy-plugin-nesting-toc");
 const { parse } = require("node-html-parser");
 
 const { headerToId, namedHeadingsFilter } = require("./src/helpers/utils");
@@ -18,6 +18,7 @@ module.exports = function (eleventyConfig) {
     breaks: true,
     html: true,
   })
+    .use(require("markdown-it-mark"))
     .use(require("markdown-it-footnote"))
     .use(function (md) {
       md.renderer.rules.hashtag_open = function (tokens, idx) {
@@ -139,6 +140,22 @@ module.exports = function (eleventyConfig) {
 
         return defaultLinkRule(tokens, idx, options, env, self);
       };
+      // Footnote heading fix (till the upstream releases the fix)
+      md.renderer.rules.render_footnote_anchor_name = (
+        tokens,
+        idx,
+        options,
+        env
+      ) => {
+        var n = Number(tokens[idx].meta.id + 1).toString();
+        var prefix = "";
+
+        if (env && typeof env.docId === "string") {
+          prefix = "-" + env.docId + "-";
+        }
+
+        return prefix + n;
+      };
     });
 
   eleventyConfig.setLibrary("md", markdownLib);
@@ -162,6 +179,7 @@ module.exports = function (eleventyConfig) {
         }
 
         let permalink = `/notes/${slugify(fileName)}`;
+        let noteIcon = process.env.NOTE_ICON_DEFAULT;
         const title = linkTitle ? linkTitle : fileName;
         let deadLink = false;
 
@@ -175,22 +193,16 @@ module.exports = function (eleventyConfig) {
           if (frontMatter.data.permalink) {
             permalink = frontMatter.data.permalink;
           }
+          if (frontMatter.data.noteIcon) {
+            noteIcon = frontMatter.data.noteIcon;
+          }
         } catch {
           deadLink = true;
         }
 
         return `<a class="internal-link ${
           deadLink ? "is-unresolved" : ""
-        }" href="${permalink}${headerLinkPath}">${title}</a>`;
-      })
-    );
-  });
-
-  eleventyConfig.addFilter("highlight", function (str) {
-    return (
-      str &&
-      str.replace(/\=\=(.*?)\=\=/g, function (match, p1) {
-        return `<mark>${p1}</mark>`;
+        }" ${deadLink ? "" : 'data-note-icon="' + noteIcon + '"'} href="${permalink}${headerLinkPath}">${title}</a>`;
       })
     );
   });
@@ -199,7 +211,7 @@ module.exports = function (eleventyConfig) {
     return (
       str &&
       str.replace(tagRegex, function (match, precede, tag) {
-        return `${precede}<a class="tag" onclick="toggleTagSearch(this)">${tag}</a>`;
+        return `${precede}<a class="tag" onclick="toggleTagSearch(this)" data-content="${tag}">${tag}</a>`;
       })
     );
   });
@@ -285,6 +297,7 @@ module.exports = function (eleventyConfig) {
   });
 
   eleventyConfig.addPassthroughCopy("src/site/img");
+  eleventyConfig.addPassthroughCopy("src/site/scripts");
   eleventyConfig.addPassthroughCopy("src/site/styles/_theme.*.css");
   eleventyConfig.addPlugin(faviconPlugin, { destination: "dist" });
   eleventyConfig.addPlugin(tocPlugin, {
